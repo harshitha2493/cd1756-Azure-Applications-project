@@ -7,21 +7,30 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_session import Session
+import os
 
 app = Flask(__name__)
 app.config.from_object(Config)
+# TODO: Add any logging levels and handlers with app.logger
+if not os.path.exists('logs'):
+    os.mkdir('logs')
 
-# Logging (optional, useful in Azure)
-if not app.debug:
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
-    app.logger.addHandler(handler)
+# Configure the app logger
+logging.basicConfig(
+    level=logging.INFO,  # You can change to DEBUG for more details
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.FileHandler('logs/app.log', encoding='utf-8'),
+        logging.StreamHandler()  # This makes logs visible in Azure Log Stream
+    ]
+)
 
-# Initialize session, database, login manager
+app.logger.info("Flask application startup initialized.")
+
+
 Session(app)
 db = SQLAlchemy(app)
 login = LoginManager(app)
 login.login_view = 'login'
 
-# Import views
-from . import views  # Use relative import
+import FlaskWebProject.views
