@@ -26,10 +26,16 @@ class Config(object):
 
     # Microsoft Authentication
     CLIENT_SECRET = os.environ.get('CLIENT_SECRET')  # keep secret in Azure
-    AUTHORITY = 'https://login.microsoftonline.com/eaef6774-977d-450a-9e6c-9e652e39fb95'
-    CLIENT_ID = 'a5623f84-9d09-4cc9-8867-b713186a486c'
-    REDIRECT_PATH = "/getAToken"
-    SCOPE = ["User.Read"]
 
-    # Session
-    SESSION_TYPE = "filesystem"
+    AUTHORITY = "https://login.microsoftonline.com/common"  # For multi-tenant app, else put tenant name
+    # AUTHORITY = "https://login.microsoftonline.com/Enter_the_Tenant_Name_Here"
+
+    CLIENT_ID = "ENTER_CLIENT_ID_HERE"
+
+    REDIRECT_PATH = "/getAToken"  # Used to form an absolute URL; must match to app's redirect_uri set in AAD
+
+    # You can find the proper permission names from this document
+    # https://docs.microsoft.com/en-us/graph/permissions-reference
+    SCOPE = ["User.Read"] # Only need to read user profile for this app
+
+    SESSION_TYPE = "filesystem"  # Token cache will be stored in server-side session
